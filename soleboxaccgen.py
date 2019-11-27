@@ -352,8 +352,6 @@ def generateAccount():
             'lgn_pwd2': passwd,
             'save' : 'Save',
         }
-    return 0
-
 
     register_post = s.post(url='https://www.solebox.com/index.php?lang=1&', headers=headers, data=register_payload, allow_redirects=False)
     if register_post.status_code in (302, 200):
@@ -450,6 +448,7 @@ if not proxyList:
         with logger.print_lock:
             print(Fore.YELLOW + gettime() + ' [WARNING] -> You are trying to create more than 3 accounts with no proxies! Add some proxies and try again.')
 # generateAccount()
+
 else:
     threads = []
     for acc in range(how_many):
