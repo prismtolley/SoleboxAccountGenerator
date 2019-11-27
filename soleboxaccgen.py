@@ -173,8 +173,8 @@ def getCountryId(country_name):
 
 
 ####################          Loading data and initializing other later used variables          ####################
-# with open('useragents.txt', 'r') as f:
-with open('commonagents.txt', 'r') as f:
+with open('useragents.txt', 'r') as f:
+# with open('commonagents.txt', 'r') as f:
     useragents = f.read()
     useragents = useragents.split('\n')
 
