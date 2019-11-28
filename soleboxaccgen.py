@@ -51,6 +51,8 @@ try:
 
 except:
     print('[FATAL ERROR] -> "Some dependencies are not installed."')
+    print('!!! Make sure you read and do EVERYTHING in the "Before running" section of the README.md file on Github !!!')
+    print('Available from:\thttps://github.com/rtunaboss/SoleboxAccountGenerator')
     input()
     quit()
 
@@ -174,7 +176,6 @@ def getCountryId(country_name):
 
 ####################          Loading data and initializing other later used variables          ####################
 with open('useragents.txt', 'r') as f:
-# with open('commonagents.txt', 'r') as f:
     useragents = f.read()
     useragents = useragents.split('\n')
 
@@ -448,14 +449,27 @@ if not proxyList:
         with logger.print_lock:
             print(Fore.YELLOW + gettime() + ' [WARNING] -> You are trying to create more than 3 accounts with no proxies! Add some proxies and try again.')
 # generateAccount()
-
 else:
     threads = []
-    for acc in range(how_many):
-        t = threading.Thread(target=generateAccount)
-        threads.append(t)
-        t.start()
-        time.sleep(1)
+    while (how_many / 10 >= 1):
+        for acc in range(10):
+            t = threading.Thread(target=generateAccount)
+            threads.append(t)
+            t.start()
+            how_many -= 10
+            time.sleep(0.5)
+        print('[STATUS] -> Sleeping for 60sec...')
+        time.sleep(60)
 
+        for t in threads:
+            t.join()
+
+    if (how_many != 0):
+        for acc in range(how_many):
+            t = threading.Thread(target=generateAccount)
+            threads.append(t)
+            t.start()
+            time.sleep(0.5)
+            
     for t in threads:
         t.join()
