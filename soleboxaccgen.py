@@ -51,6 +51,8 @@ try:
 
 except:
     print('[FATAL ERROR] -> "Some dependencies are not installed."')
+    print('!!! Make sure you read and do EVERYTHING in the "Before running" section of the README.md file on Github !!!')
+    print('Available from:\thttps://github.com/rtunaboss/SoleboxAccountGenerator')
     input()
     quit()
 
@@ -144,7 +146,7 @@ def scrapeCountryIds():
     with logger.print_lock:
         print(gettime() + ' [STATUS] -> Scraping country IDs...')
     s = cfscrape.create_scraper()
-    r = s.get(url='https://www.solebox.com/en/my-account/', headers=headers)
+    r = s.get(url='https://www.solebox.com/', headers=headers)
     soup = bs(r.text, 'lxml')
     countrySelection = soup.find('select', {'id':'invCountrySelect'})
     countryValues = countrySelection.contents
@@ -174,7 +176,6 @@ def getCountryId(country_name):
 
 ####################          Loading data and initializing other later used variables          ####################
 with open('useragents.txt', 'r') as f:
-# with open('commonagents.txt', 'r') as f:
     useragents = f.read()
     useragents = useragents.split('\n')
 
@@ -258,12 +259,12 @@ if country_id == None:
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
     'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'n-GB,en-US;q=0.9,en;q=0.8,cs;q=0.7,de;q=0.6',
-    'cache-control': 'max-age=0',
+    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8,cs;q=0.7,de;q=0.6',
+    # 'cache-control': 'max-age=0',
     'content-type':'application/x-www-form-urlencoded',
     'upgrade-insecure-requests': '1',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'none',
+    # 'sec-fetch-mode': 'navigate',
+    # 'sec-fetch-site': 'none',
     }
 
 linetwolist = ['apt', 'apartment', 'dorm', 'suite', 'unit', 'house', 'unt', 'room', 'floor']
@@ -273,10 +274,11 @@ def generateAccount():
     ##########     Initializing a session & getting stoken     ##########
     useragent = random.choice(useragents)
     headers['user-agent'] = useragent
+    # headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0'
     with logger.print_lock:
         print(gettime() + ' [STATUS] -> Account generation has started...')
-    s = cfscrape.create_scraper()
-    # s = requests.Session()
+    # s = cfscrape.create_scraper()
+    s = requests.Session()
     if proxyList:
         proxy_is_bad = True
         while proxy_is_bad:
@@ -352,8 +354,6 @@ def generateAccount():
             'lgn_pwd2': passwd,
             'save' : 'Save',
         }
-    return 0
-
 
     register_post = s.post(url='https://www.solebox.com/index.php?lang=1&', headers=headers, data=register_payload, allow_redirects=False)
     if register_post.status_code in (302, 200):
@@ -452,11 +452,25 @@ if not proxyList:
 # generateAccount()
 else:
     threads = []
-    for acc in range(how_many):
-        t = threading.Thread(target=generateAccount)
-        threads.append(t)
-        t.start()
-        time.sleep(1)
+    while (how_many / 10 >= 1):
+        for acc in range(10):
+            t = threading.Thread(target=generateAccount)
+            threads.append(t)
+            t.start()
+            how_many -= 10
+            time.sleep(0.5)
+        print('[STATUS] -> Sleeping for 60sec...')
+        time.sleep(60)
 
+        for t in threads:
+            t.join()
+
+    if (how_many != 0):
+        for acc in range(how_many):
+            t = threading.Thread(target=generateAccount)
+            threads.append(t)
+            t.start()
+            time.sleep(0.5)
+            
     for t in threads:
         t.join()
