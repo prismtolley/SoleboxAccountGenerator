@@ -176,6 +176,7 @@ def getCountryId(country_name):
 
 ####################          Loading data and initializing other later used variables          ####################
 with open('useragents.txt', 'r') as f:
+# with open('commonagents.txt', 'r') as f:
     useragents = f.read()
     useragents = useragents.split('\n')
 
@@ -263,8 +264,9 @@ headers = {
     # 'cache-control': 'max-age=0',
     'content-type':'application/x-www-form-urlencoded',
     'upgrade-insecure-requests': '1',
-    # 'sec-fetch-mode': 'navigate',
-    # 'sec-fetch-site': 'none',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
     }
 
 linetwolist = ['apt', 'apartment', 'dorm', 'suite', 'unit', 'house', 'unt', 'room', 'floor']
